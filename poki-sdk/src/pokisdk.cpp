@@ -50,6 +50,7 @@ extern "C" {
     void PokiSdkJs_ShareableURL(ShareableURLCallback callback);
     const char* PokiSdkJs_GetURLParam(const char* key);
 
+    void PokiSdkJs_AddParameterForMeasure(const char* key, const char* value);
     void PokiSdkJs_Measure(const char* category, const char* what, const char* action);
 
     void PokiSdkJs_MovePill(double topPercent, double topPx);
@@ -297,6 +298,25 @@ static int PokiSdk_Measure(lua_State* L)
     const char* what = luaL_optstring(L, 2, "");
     // action is optional and defaults to an empty string
     const char* action = luaL_optstring(L, 3, "");
+    // data is an optional table with key-value pairs
+    int dataType = lua_type(L, 4);
+    if (dataType != LUA_TNONE && dataType != LUA_TNIL && dataType != LUA_TTABLE)
+    {
+        return luaL_error(L, "bad argument #4 to 'measure' (table expected, got %s)", luaL_typename(L, 4));
+    }
+    if (dataType == LUA_TTABLE)
+    {
+        lua_pushvalue(L, 4);
+        lua_pushnil(L);
+        while (lua_next(L, -2) != 0)
+        {
+            const char* key = luaL_checkstring(L, -2);
+            const char* value = luaL_checkstring(L, -1);
+            PokiSdkJs_AddParameterForMeasure(key, value);
+            lua_pop(L, 1);
+        }
+        lua_pop(L, 1);
+    }
     PokiSdkJs_Measure(category, what, action);
     return 0;
 }
