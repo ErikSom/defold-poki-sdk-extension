@@ -302,7 +302,7 @@ static int PokiSdk_Measure(lua_State* L)
     int dataType = lua_type(L, 4);
     if (dataType != LUA_TNONE && dataType != LUA_TNIL && dataType != LUA_TTABLE)
     {
-        return luaL_error(L, "bad argument #4 to 'measure' (table expected, got %s)", lua_typename(L, dataType));
+        return luaL_error(L, "bad argument #4 to 'measure' (table expected, got %s)", luaL_typename(L, 4));
     }
     if (dataType == LUA_TTABLE)
     {
