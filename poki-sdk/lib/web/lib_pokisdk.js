@@ -117,8 +117,12 @@ var LibPokiSdk = {
     },
 
     PokiSdkJs_Measure: function(category, what, action) {
-        PokiSDK.measure(UTF8ToString(category), UTF8ToString(what), UTF8ToString(action), PokiSdk._measureData);
-        PokiSdk._measureData = null;
+        var measureData = PokiSdk._measureData;
+        try {
+            PokiSDK.measure(UTF8ToString(category), UTF8ToString(what), UTF8ToString(action), measureData);
+        } finally {
+            PokiSdk._measureData = null;
+        }
     },
 
     PokiSdkJs_MovePill: function(topPercent, topPx) {
