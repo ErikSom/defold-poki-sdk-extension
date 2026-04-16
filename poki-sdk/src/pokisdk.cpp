@@ -299,7 +299,12 @@ static int PokiSdk_Measure(lua_State* L)
     // action is optional and defaults to an empty string
     const char* action = luaL_optstring(L, 3, "");
     // data is an optional table with key-value pairs
-    if (lua_type(L, 4) == LUA_TTABLE)
+    int dataType = lua_type(L, 4);
+    if (dataType != LUA_TNONE && dataType != LUA_TNIL && dataType != LUA_TTABLE)
+    {
+        return luaL_error(L, "bad argument #4 to 'measure' (table expected, got %s)", lua_typename(L, dataType));
+    }
+    if (dataType == LUA_TTABLE)
     {
         lua_pushvalue(L, 4);
         lua_pushnil(L);
