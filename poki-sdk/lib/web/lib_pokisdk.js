@@ -15,6 +15,7 @@ var LibPokiSdk = {
         _callback: null,
         _urlCallback: null,
         _urlParameters:null,
+        _measureData: null,
         _messagesHashTable: {},
 
         _commercialBreakCallback: function() {
@@ -108,8 +109,16 @@ var LibPokiSdk = {
         return stringToUTF8OnStack(value);
     },
 
+    PokiSdkJs_AddParameterForMeasure: function(key, value) {
+        if (PokiSdk._measureData == null) {
+            PokiSdk._measureData = {};
+        }
+        PokiSdk._measureData[UTF8ToString(key)] = UTF8ToString(value);
+    },
+
     PokiSdkJs_Measure: function(category, what, action) {
-        PokiSDK.measure(UTF8ToString(category), UTF8ToString(what), UTF8ToString(action));
+        PokiSDK.measure(UTF8ToString(category), UTF8ToString(what), UTF8ToString(action), PokiSdk._measureData);
+        PokiSdk._measureData = null;
     },
 
     PokiSdkJs_MovePill: function(topPercent, topPx) {
